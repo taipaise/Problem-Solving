@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <algorithm>
 
 #define FAST ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL)
@@ -48,10 +47,9 @@ struct DisjointSet{
         if(u == v) 
             return;
         
-        if (rank[u] > rank[v]){
+        if (rank[u] > rank[v])
             swap(u, v);
-            parent[u] = v;
-        }
+        parent[u] = v;
         if (rank[u] == rank[v]) rank[v]++;
     }
 };
