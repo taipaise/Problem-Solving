@@ -1,6 +1,6 @@
 #include<iostream>
 #include<vector>
-#include<limits>
+#include <limits>
 #define FAST ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL)
 #define endl "\n"
 #define rep(i, a, b) for(auto i = a; i < b; ++i)
@@ -14,6 +14,7 @@ using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
 
+//구간의 최솟값을 구하는 트리
 struct MinRMQ{
     int rmq_size;
     vector<int> range_min;
@@ -134,33 +135,25 @@ vector<int> arr;
 
 int main(){
     FAST;
-#ifndef ONLINE_JUDGE
-    clock_t start = clock();
-    freopen("input.txt", "r", stdin);
-#endif
+
     cin >> n >> m;
-    arr.resize(n);
-    for(auto& e: arr) cin >> e;
-    
+    arr.resize(n + 1);
+    REP(i, 1, n) cin >> arr[i];
+
+    //입력 받은 배열을 바탕으로 최솟값, 최댓값 트리 생성    
     MinRMQ minRMQ(arr);
     MaxRMQ maxRMQ(arr);
     int a, b;
 
     while(m--){
         cin >> a >> b;
-        // cout << "a: " << a << ", b: " << b << endl;
 
         //arr 벡터는 0부터 시작하므로 1빼주어야 한다.
-        int res_min = minRMQ.query(a - 1, b - 1);
-        int res_max = maxRMQ.query(a - 1, b - 1);
+        int res_min = minRMQ.query(a, b);
+        int res_max = maxRMQ.query(a, b);
 
         cout << res_min << ' ' << res_max << endl;
 
     }
-
-
-#ifndef ONLINE_JUDGE
-    cout << endl << "elapsed time: " << static_cast<double>(clock() - start) / CLOCKS_PER_SEC << "ms" << endl;
-#endif
     return 0;
 }
