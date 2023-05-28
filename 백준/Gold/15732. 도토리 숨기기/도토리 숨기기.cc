@@ -42,7 +42,7 @@ bool check(int mid){
         res += get_count(rules[i].interval, box_cnt);
     }
 
-    return res >= ll(d);
+    return res < ll(d);
 }
 
 int main(void){
@@ -63,19 +63,17 @@ int main(void){
     lo = 1;
     hi = int(1e6);
     
-    int r;
     while(lo <= hi){
         int mid = (lo + hi) >> 1;
         
         if(check(mid)){
-            r = mid;
-            hi = mid - 1;
+            lo = mid + 1;
         }
         else
-            lo = mid + 1;
+            hi = mid - 1;
     }
 
-    cout << r;
+    cout << lo;
 
     #ifndef ONLINE_JUDGE
         cout << endl << "elapsed time: " << static_cast<double>(clock() - start) / CLOCKS_PER_SEC << "ms" << endl;
