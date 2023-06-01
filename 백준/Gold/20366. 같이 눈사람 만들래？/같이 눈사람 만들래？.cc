@@ -23,17 +23,15 @@ int res = INF;
 int diff;
 vector<int> snow;
 
-
-
 void get_body(int lo, int hi){
     while(lo <= hi){
         int mid = (lo + hi) >> 1;
-        // cout << "!!: " << snow[mid]<<endl;
+        
         if(diff - snow[mid] < 0)
             res = min(res, (diff - snow[mid]) * -1);
         else
             res = min(res, (diff - snow[mid]));
-        // cout <<"res: " <<res << endl;
+        
         if(snow[mid] == diff){
             cout << 0;
             exit(0);
@@ -43,11 +41,7 @@ void get_body(int lo, int hi){
         else
             hi = mid -1;
     }
-    // cout << endl;
 }
-
-//엘사 몸통, 안나 몸통, 엘사 머리통, 안나 머리통
-//엘사 몸통, 안나 몸통,  안나 머리통, 엘사 머리통
 
 void solve(){
     //엘사 눈사람의 머리
@@ -56,11 +50,9 @@ void solve(){
         rep(j, i + 1, n){
             //안나 눈사람의 머리
             rep(k, i + 1, j){
-                
                 if(i == k) continue;
 
-                diff = snow[i] + snow[j] - snow[k];
-                
+                diff = snow[i] + snow[j] - snow[k];                
                 get_body(k + 1, j - 1);
             }
         }
