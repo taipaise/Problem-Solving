@@ -55,21 +55,13 @@ void solve(){
         //엘사 눈사람의 몸통
         rep(j, i + 1, n){
             //안나 눈사람의 머리
-            rep(k, 0, j){
+            rep(k, i + 1, j){
                 
                 if(i == k) continue;
 
                 diff = snow[i] + snow[j] - snow[k];
-                // cout << snow[i] << " + " <<snow[j] <<" - " <<snow[k] << endl;
-                // cout <<"diff: " <<diff<<endl;
-                //안나 눈사람의 머리가 엘사 눈사람의 머리보다 작을 경우
-                if(k < i)
-                    get_body(i + 1, j - 1);
-                //안나 눈사람의 머리가 엘사 눈사람의 머리보다 클 경우
-                else
-                    get_body(k + 1, j - 1);
                 
-                get_body(j + 1, n - 1);
+                get_body(k + 1, j - 1);
             }
         }
     }
