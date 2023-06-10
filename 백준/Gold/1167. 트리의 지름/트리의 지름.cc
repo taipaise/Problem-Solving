@@ -59,6 +59,7 @@ void init(int x){
 
 
 int main(void){
+    FAST;
     cin >> n;
     graph.resize(n + 1);
 
