@@ -57,7 +57,6 @@ void spread_virus(){
     queue<POS> q;
     int visited[50][50];
     copy(&board[0][0], &board[0][0] + (50 * 50), &visited[0][0]);
-    // cout << "size: " << virus.size();
     rep(i, 0, virus.size()){
         q.push(candidate[virus[i]]);
         visited[candidate[virus[i]].y][candidate[virus[i]].x] = 1;
@@ -83,15 +82,6 @@ void spread_virus(){
     }
     int temp =res;
     res = min(res, check(visited));
-    // if(res != temp){
-    //     rep(i, 0, n){
-    //         rep(j, 0, n){
-    //             cout << visited[i][j] << " ";
-    //         }
-    //     cout << "\n";
-    // }
-    // cout << "\n";
-    // }
 }
 
 void locate_virus(int cnt){
