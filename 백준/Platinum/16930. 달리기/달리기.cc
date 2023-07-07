@@ -7,7 +7,7 @@
 #define REP(i, a, b) for(auto i = a; i <= b; i++)
 using namespace std;
 
-struct POS {
+struct POS{
     int y;
     int x;
 };
@@ -20,11 +20,11 @@ POS srt, dest;
 char board[1001][1001];
 int visited[1001][1001];
 
-bool in_range(int y, int x) {
+bool in_range(int y, int x){
     return (0 < y && y <= row) && (0 < x && x <= col);
 }
 
-void bfs() {
+void bfs(){
     queue<POS> q;
     q.push(srt);
     visited[srt.y][srt.x] = 0;
@@ -33,7 +33,7 @@ void bfs() {
         int y = q.front().y;
         int x = q.front().x;
         q.pop();
-        // cout << y << " " << x << " " << visited[y][x] << "\n";
+
         rep(dir, 0, 4) {
             REP(i, 1, k) {
                 int ny = y + (dy[dir] * i);
@@ -43,6 +43,7 @@ void bfs() {
                 if(board[ny][nx] == '#') break;
                 if(visited[ny][nx] <= visited[y][x]) break;
                 if(visited[ny][nx] != 2147483647) continue;
+
                 visited[ny][nx] = visited[y][x] + 1;
                 if(ny == dest.y && nx == dest.x) return;
                 q.push({ny, nx});
@@ -51,11 +52,11 @@ void bfs() {
     }
 }
 
-int main(void) {
+int main(void){
     cin >> row >> col >> k;
     fill(&visited[0][0], &visited[0][0] + (1001 * 1001), 2147483647);
-    REP(i, 1, row) {
-        REP(j, 1, col) {
+    REP(i, 1, row){
+        REP(j, 1, col){
             cin >> board[i][j];
         }
     }
@@ -67,7 +68,7 @@ int main(void) {
     dest = {temp_y, temp_x};
 
     bfs();
-    if (visited[dest.y][dest.x] != 2147483647) cout << visited[dest.y][dest.x];
+    if(visited[dest.y][dest.x] != 2147483647) cout << visited[dest.y][dest.x];
     else cout << -1;
 
     return 0;
