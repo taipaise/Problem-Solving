@@ -7,24 +7,24 @@
 #define rep(i, a, b) for(auto i = a; i < b; ++i)
 #define REP(i, a, b) for(auto i = a; i <= b; ++i)
 using namespace std;
-typedef unsigned long long ll;
+typedef unsigned long long ull;
 
-ll n, m;
-vector<ll> vec;
+ull n, m;
+vector<ull> vec;
 
-bool check(ll mid){
-    ll res = 0; 
+bool check(ull mid){
+    ull res = 0; 
     for(auto &time: vec) res += (mid / time);
 
     return res >= m;
 }
 
-ll solve(){
-    ll lo = vec.front() - 1;
-    ll hi = vec.back() * m + 1;
+ull solve(){
+    ull lo = vec.front() - 1;
+    ull hi = vec.back() * m + 1;
 
     while(lo + 1 < hi){
-        ll mid = (lo + hi) >> 1;
+        ull mid = (lo + hi) >> 1;
 
         if(check(mid)) hi = mid;
         else lo = mid;
@@ -34,6 +34,7 @@ ll solve(){
 }
 
 int main(void){
+    FAST;
     cin >> n >> m;
     vec.resize(n);
     rep(i, 0, n) cin >> vec[i];
