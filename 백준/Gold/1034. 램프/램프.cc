@@ -8,7 +8,7 @@
 #define REP(i, a, b) for(int i = a; i <= b; i++)
 using namespace std;
 
-int r , c, k;
+int r ,c, k;
 unordered_map<string, int> even;
 unordered_map<string, int> odd;
 
@@ -27,7 +27,6 @@ int solve(){
             if(!check(e.first)) continue;
             res = max(res, e.second);
         }
-            
     }
     else{
         for(auto e: odd){
@@ -41,6 +40,7 @@ int solve(){
 
 
 int main(void){
+    FAST;
     cin >> r >> c;
     
     string temp;
