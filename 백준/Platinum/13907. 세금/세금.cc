@@ -29,7 +29,6 @@ int n, m, k;
 int srt, dest;
 vector<Edge> vertex[1001];
 ll dp[1001][1001]; // dp[i][j] := i번째 도시에 j개의 도로를 이용하여 도착했을때 최소비용
-vector<int> taxInc;
 
 void dikjstra(){
     priority_queue<Edge2> pq;
@@ -39,7 +38,6 @@ void dikjstra(){
     while(!pq.empty()){
         auto[node, cost, moveCnt] = pq.top();
         pq.pop();
-
 
         if(moveCnt >= n) continue;
         if(dp[node][moveCnt] < cost) continue;
@@ -63,16 +61,14 @@ ll getRes(int inc){
         if(dp[dest][i] == MAX) continue;
         res = min(res, dp[dest][i] + (inc * i));
     }
-    // cout << "\n";
     return res;
 }
 
 int main(void){
     FAST;
-//    freopen("input.txt", "r", stdin);
+    // freopen("input.txt", "r", stdin);
     cin >> n >> m >> k;
     cin >> srt >> dest;
-    taxInc.resize(k + 1);
 
     REP(i, 0, n)
         REP(j, 0, n)
@@ -86,8 +82,6 @@ int main(void){
     }
 
     dikjstra();
-
-
 
     int taxInc = 0;
     cout << getRes(taxInc) << "\n";
