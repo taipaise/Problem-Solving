@@ -51,18 +51,21 @@ struct DisjointSet{
 
 vector<Edge> edges;
 int n;
+ll board[1000][1000];
 
 int main(void){
+    FAST;
     cin >> n;
     DisjointSet ds = DisjointSet(n);
 
-    rep(i, 0, n){
-        rep(j, 0, n){
-            ll temp;
-            cin >> temp;
-            edges.push_back({i, j, temp});
-        }
-    }
+    rep(i, 0, n)
+        rep(j, 0, n)
+            cin >> board[i][j];
+
+    rep(i, 0, n)
+        rep(j, i + 1, n)
+            edges.push_back({i, j, board[i][j]});
+
             
     sort(edges.begin(), edges.end());
 
