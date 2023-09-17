@@ -23,6 +23,7 @@ vector<Person> vec;
 
 
 int main(void){
+    FAST;
     cin >> tc;
 
     rep(t, 0, tc){
