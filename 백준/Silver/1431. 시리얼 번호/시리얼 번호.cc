@@ -1,54 +1,46 @@
 #include <iostream>
-#include <vector>
-#include <queue>
-#include <cstdlib>
 #include <algorithm>
-#include <set>
-#include <unordered_map>
-#define FAST ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL)
+#include <string>
+#include <vector>
+
+#define FAST ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL)
 #define rep(i, a, b) for(auto i = a; i < b; ++i)
+#define endl "\n"
+
 using namespace std;
 
-struct Serial{
-    string serial;
-    int num;
-
-    bool operator<(const Serial& rhs )const {
-        if(rhs.serial.length() != serial.length())
-            return serial.length() < rhs.serial.length();
-        if(num != rhs.num)
-            return num < rhs.num;
-        return  serial < rhs.serial;
+long long add_serial(string str){
+    long long res = 0;
+    rep(i, 0, str.length()){
+        if(str[i] >= '0' && str[i] <= '9') res += (str[i] - '0');
     }
-};
+    return res;
+}
+
+bool compare(string str1, string str2){
+    if(str1.length() != str2.length()) return str1.length() < str2.length();
+    long long sum1 = add_serial(str1);
+    long long sum2 = add_serial(str2);
+
+    if(sum1 != sum2) return sum1 < sum2;
+    return str1 < str2;
+}
 
 int n;
-vector<Serial> vec;
-
-
-int getNum(string str){
-    int sum = 0;
-
-    rep(i, 0, str.length()){
-        if(!(str[i] >= '0' && str[i] <= '9')) continue;
-        sum += (str[i] - '0');
-    }
-
-    return sum;
-}
 
 int main(void){
     FAST;
+    // freopen("input.txt", "r", stdin);
     cin >> n;
-    vec.resize(n);
+    vector<string> serials(n);
 
-    string str;
     rep(i, 0, n){
-        cin >> str;
-        vec[i] = {str, getNum(str)};
+        cin >> serials[i];
     }
 
-    sort(vec.begin(), vec.end());
+    sort(serials.begin(), serials.end(), compare);
 
-    rep(i, 0, n) cout << vec[i].serial << "\n";
+    for(auto& e : serials) cout << e << endl;
+
+    return 0;
 }
