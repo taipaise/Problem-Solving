@@ -18,26 +18,27 @@ string vaccine = "";
 bool isUsed[10];
 int res = 987654321;
 
+bool isOverlap(string a, string b) {
+    if(a.length() > b.length()) return false;
+    return a == b.substr(0, a.length());
+}
+
 int count_overlap(string pre, string next) {
-    if(pre.length() == 0) return 0;
+    int length = pre.length();
+    if(length == 0) return 0;
 
-    int pre_pos = 0;
-    int next_pos = 0;
-
-    while(pre_pos < pre.length()) {
-        if (pre[pre_pos] == next[next_pos]) ++next_pos;
-        else {
-            next_pos = 0;
-            if(pre[pre_pos] == next[next_pos]) next_pos = 1;
+    int pos = 0;
+    int res = 0;
+    
+    while(pos < length) {
+        if(pre[pos] == next[0]) {
+            if(isOverlap(pre.substr(pos), next)) res = max(res, length - pos);
         }
-        ++pre_pos;
+        ++pos;
     }
 
-    if(next_pos == 0) {
-        if(pre.back() != next.front()) return -1;
-    }
-
-    return next_pos;
+    if(res == 0) return -1;
+    return res;
 } 
 
 void solve(int cnt) {
