@@ -26,7 +26,10 @@ int count_overlap(string pre, string next) {
 
     while(pre_pos < pre.length()) {
         if (pre[pre_pos] == next[next_pos]) ++next_pos;
-        else next_pos = 0;
+        else {
+            next_pos = 0;
+            if(pre[pre_pos] == next[next_pos]) next_pos = 1;
+        }
         ++pre_pos;
     }
 
@@ -47,7 +50,7 @@ void solve(int cnt) {
     rep(i, 0, n) {
 
         if(isUsed[i]) continue;
-        int vaccine_length = vaccine.length();
+        string  vaccine_origin = vaccine;
         int overlapCnt = count_overlap(vaccine, vec[i]);
         if(overlapCnt == -1) continue;
 
@@ -57,7 +60,7 @@ void solve(int cnt) {
         solve(cnt + 1);
 
         isUsed[i] = false;
-        vaccine = vaccine.substr(0, vaccine_length);
+        vaccine = vaccine_origin;
     }
 }
 
