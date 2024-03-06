@@ -5,25 +5,22 @@ let n = Int(readLine()!)!
 var count = 0
 var res = 666
 
-func contains(str: Int) -> Bool {
-    let chars = String(str).map{ String($0) }
-    var isDevil = 0
+func contains(num: Int) -> Bool {
+    var nextNum = num
     
-    for i in 0..<chars.count {
-        if chars[i] == "6" {
-            isDevil += 1
-        } else {
-            isDevil = 0
+    while nextNum >= 666 {
+        if nextNum % 1000 == 666 {
+            return true
         }
         
-        if isDevil == 3 { return true }
+        nextNum /= 10
     }
     
-    return false
+    return nextNum % 1000 == 666
 }
 
 while count != n {
-    if contains(str: res) {
+    if contains(num: res) {
         count += 1
     }
     res += 1
