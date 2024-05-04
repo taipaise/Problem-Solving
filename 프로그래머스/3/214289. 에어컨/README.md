@@ -1,10 +1,10 @@
 # [level 3] 에어컨 - 214289 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/214289) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/214289#) 
 
 ### 성능 요약
 
-메모리: 16.6 MB, 시간: 10.35 ms
+메모리: 16.6 MB, 시간: 9.82 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 05월 04일 15:57:15
+2024년 05월 04일 15:58:46
 
 ### 문제 설명
 

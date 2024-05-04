@@ -41,8 +41,7 @@ func solution(
             var tempUp = a
             var tempDown = a
             var tempSame = b
-            
-            
+             
             if j - 1 >= MIN_TEMP { 
                 if j - 1 < temp {
                     tempUp = 0
