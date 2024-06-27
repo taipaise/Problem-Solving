@@ -1,15 +1,14 @@
 func intToString(_ i: Int, _ base: [String]) -> String {
-    var res: [String] = []
+    var res = ""
     var num = i
     
     while num / base.count > 0 {
         let index = num % base.count
-        res.append(base[index])
+        res = base[index] + res
         num /= base.count
     }
-    res.append(base[num])
-    
-    return res.reversed().joined()
+    res = base[num] + res    
+    return res
 }
 
 func solution(_ n:Int, _ t:Int, _ m:Int, _ p:Int) -> String {
