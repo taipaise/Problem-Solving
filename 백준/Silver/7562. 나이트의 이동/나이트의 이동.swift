@@ -27,11 +27,11 @@ func inRange(_ y: Int, _ x: Int) -> Bool {
 
 func bfs(_ start: Point) -> Int {
     var q = Queue<Point>()
-    q.enqueue(start)
+    q.push(start)
     board[start.y][start.x] = true
     
     while !q.isEmpty {
-        guard let point = q.dequeue() else { return -1 }
+        guard let point = q.pop() else { return -1 }
         let y = point.y
         let x = point.x
         let count = point.count
@@ -51,7 +51,7 @@ func bfs(_ start: Point) -> Int {
             else { continue }
             
             board[ny][nx] = true
-            q.enqueue(.init(y: ny, x: nx, count: count + 1))
+            q.push(.init(y: ny, x: nx, count: count + 1))
         }
     }
     
@@ -64,21 +64,26 @@ for _ in 0..<tc {
 }
 
 struct Queue<T> {
-    private var queue: [T] = []
+    private var inQ: [T] = []
+    private var outQ: [T] = []
     
     public var count: Int {
-        return queue.count
+        return inQ.count + outQ.count
     }
     
     public var isEmpty: Bool {
-        return queue.isEmpty
+        return inQ.isEmpty  && outQ.isEmpty
     }
     
-    public mutating func enqueue(_ element: T) {
-        queue.append(element)
+    public mutating func push(_ element: T) {
+        inQ.append(element)
     }
     
-    public mutating func dequeue() -> T? {
-        return isEmpty ? nil : queue.removeFirst()
+    public mutating func pop() -> T? {
+        if outQ.isEmpty {
+            outQ = inQ.reversed()
+            inQ.removeAll()
+        }
+        return outQ.popLast()
     }
 }
