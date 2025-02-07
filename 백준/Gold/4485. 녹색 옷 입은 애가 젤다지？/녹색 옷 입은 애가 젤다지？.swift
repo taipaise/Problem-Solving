@@ -21,10 +21,9 @@ struct Heap<T: Comparable> {
 
         heap.swapAt(1, heap.count - 1)
 
-        let result = heap.removeLast()
-        heapifyDown()
+        defer { heapifyDown() }
 
-        return result
+        return heap.removeLast()
     }
 
     mutating func heapifyUp() {
