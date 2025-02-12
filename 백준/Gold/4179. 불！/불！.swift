@@ -1,14 +1,4 @@
 import Foundation
-// 아이디어
-// 탈출할 수 있는지 확인한다. 가장자리에 있다면 탈출 성공
-// 시간을 증가시킨다.
-// 지훈이가 먼저 이동
-// 불을 확산시킨다.
-
-// 불을 먼저 쭉 지른다 (불이 난 시간 기록)
-// 지훈이가 이동한다. 불이 난 시간이 이동할 시간보다 이후라면 이동할 수 있다
-// 가장자리까지 이동할 수 있는 최소 시간을 구한다
-
 struct Queue<T> {
     private var queue: [T] = []
     private var head = 0
@@ -23,7 +13,13 @@ struct Queue<T> {
     mutating func pop() -> T? {
         guard !isEmpty else { return nil }
 
+        if head > 50 {
+            queue.removeFirst(head)
+            head = 0
+        }
+
         defer { head += 1 }
+
         return queue[head]
     }
 }
@@ -36,20 +32,25 @@ struct Pos {
 
 let dy = [-1, 1, 0, 0]
 let dx = [0, 0, -1, 1]
-let numbers = readLine()!.split(separator: " ").map { Int(String($0))! }
-let maxY = numbers.first!
-let maxX = numbers.last!
+let numbers = readLine()!
+    .split(separator: " ")
+    .map { Int(String($0))! }
+let maxY = numbers[0]
+let maxX = numbers[1]
 
-// 불이 난 시간을 기록
-var fireMap: [[Int]] = Array(
+var boards: [[String]] = []
+// 불이 난 시간
+var fireTimes: [[Int]] = Array(
     repeating: Array(repeating: Int.max, count: maxX),
     count: maxY)
-// 처음 지도 상태
-var boards: [[String]] = []
+// 지훈이가 방문했는지 체크
+var visited = Array(
+    repeating: Array(repeating: false, count: maxX),
+    count: maxY)
 var fires: [Pos] = []
 var jihoon: Pos = Pos(y: 0, x: 0, time: 0)
-var visited: [[Bool]] = []
 
+// step1. 입력 받기
 func input() {
     for y in 0..<maxY {
         let line = readLine()!.map { String($0) }
@@ -65,22 +66,19 @@ func input() {
     }
 }
 
-func initVisited() {
-    visited = Array(
-        repeating: Array(repeating: false, count: maxX),
-        count: maxY)
-}
-
+// bfs 준비 함수: 입력한 위치가 유효한 범위 내인지 확인하는 함수
 func inRange(_ y : Int, _ x: Int) -> Bool {
-    return 0 <= y && y < maxY && 0 <= x && x < maxX
+    return (0 <= y && y < maxY) && (0 <= x && x < maxX)
 }
 
-// 시작지점들로부터 불을 퍼뜨림
+// 불 지르는 함수
 func spreadFire(_ starts: [Pos]) {
     var queue = Queue<Pos>()
+
+    // 초기에 불이 난 지역을 큐에 넣음
     for start in starts {
         queue.push(start)
-        visited[start.y][start.x] = true
+        fireTimes[start.y][start.x] = 0
     }
 
     while !queue.isEmpty {
@@ -89,7 +87,6 @@ func spreadFire(_ starts: [Pos]) {
         let y = pos.y
         let x = pos.x
         let time = pos.time
-        fireMap[y][x] = time
 
         for dir in 0..<4 {
             let ny = y + dy[dir]
@@ -97,11 +94,10 @@ func spreadFire(_ starts: [Pos]) {
 
             guard
                 inRange(ny, nx),
-                !visited[ny][nx],
-                boards[ny][nx] != "#"
+                boards[ny][nx] != "#",
+                fireTimes[ny][nx] > time + 1
             else { continue }
-
-            visited[ny][nx] = true
+            fireTimes[ny][nx] = time + 1
             queue.push(Pos(y: ny, x: nx, time: time + 1))
         }
     }
@@ -136,7 +132,7 @@ func escape(_ start: Pos) -> Int? {
                 inRange(ny, nx),
                 !visited[ny][nx],
                 boards[ny][nx] != "#",
-                fireMap[ny][nx] > time + 1
+                fireTimes[ny][nx] > time + 1
             else { continue }
 
             visited[ny][nx] = true
@@ -147,12 +143,7 @@ func escape(_ start: Pos) -> Int? {
 }
 
 input()
-
-initVisited()
 spreadFire(fires)
-
-initVisited()
-
 let time = escape(jihoon)
 
 if let time = time {
