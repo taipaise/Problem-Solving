@@ -1,44 +1,32 @@
 import Foundation
 
-let inputString = readLine()!
-let treesString = readLine()!
-let nm = inputString
+let numbers = readLine()!
     .split(separator: " ")
-    .compactMap { Int($0)! }
+    .map { Int(String($0))! }
+let n = numbers[0]
+let target = numbers[1]
 
-let treeCount = nm[0]
-let targetHeight = nm[1]
-var trees = treesString
+let trees = readLine()!
     .split(separator: " ")
-    .compactMap { Int64($0)! }
+    .map { Int(String($0))! }
 
-func isSatisfy(_ height: Int64) -> Bool {
-    var result: Int64 = 0
-    
-    result = trees
-        .map { $0 > height ? $0 - height : 0 }
-        .reduce(0, { $0 + $1 })
+func check(_ height: Int) -> Bool {
+    let result = trees.reduce(0) { $0 + max(($1 - height), 0)}
 
-    return result >= targetHeight
+    return result >= target
 }
 
-func bs() -> Int64 {
-    var lo: Int64 = 0
-    var hi = trees.last! + 1
-    var mid: Int64 = 0
-    
-    while lo + 1 < hi {
-        mid = (lo + hi) >> 1
-        
-        if isSatisfy(mid) {
-            lo = mid
-        } else {
-            hi = mid
-        }
+var lo = -1
+var hi = trees.max()! + 1
+
+while lo + 1 < hi {
+    let mid = (lo + hi) >> 1
+
+    if check(mid) {
+        lo = mid
+    } else {
+        hi = mid
     }
-    
-    return lo
 }
 
-trees.sort()
-print(bs())
+print(lo)
