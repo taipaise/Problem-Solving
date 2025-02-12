@@ -1,28 +1,19 @@
 import Foundation
 
-let input = readLine()!.split(separator: " ").map { Int($0)! }
-let n = input.first!
-let m = input.last!
+let numbers = readLine()!.split(separator: " ").map { Int(String($0))! }
+let n = numbers[0]
+let targetCount = numbers[1]
 
-var res: [Int] = []
-var resString = ""
 
-func solve(_ count: Int) {
-    
-    if count == m {
-        resString += res
-            .map { String($0) }
-            .joined(separator: " ")
-        resString += "\n"
+func select(_ selected: String, _ count: Int) {
+    if count == targetCount {
+        print(selected)
         return
     }
-    
+
     for i in 1...n {
-        res.append(i)
-        solve(count + 1)
-        res.removeLast()
+        select(selected + "\(i) ", count + 1)
     }
 }
 
-solve(0)
-print(resString)
+select("", 0)
