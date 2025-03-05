@@ -4,7 +4,6 @@ import Foundation
 // 물고기가 이동하는 함수 필요
 // - 숫자가 작은 물고기 먼저 이동함
 // - 물고기가 진행할 수 있는지 확인하는 함수
-// - 물고기의 방향을 돌리는 (구조체 메서드로 구현)
 // - 방향을 모두 돌아도 이동할 수 없으면 이동하지 않음
 // - 이동할 위치에 물고기 있으면 서로 위치 스왑 (swapAt() 사용)
 
@@ -79,14 +78,14 @@ func inRange(_ y: Int, _ x: Int) -> Bool {
 }
 
 // MARK: - 물고기 이동 함수
-// 정방향 이동 시 번호순, 역방향 이동 시 번호 역순
+// 정방향 이동 시 번호순
 func moveFish(_ fishNum: Int, _ sharkPos: Pos) {
     guard
         let pos = index[fishNum],
         let fish = boards[pos.y][pos.x]
     else { return }
 
-    // 이동 가능할 때까지 반시계 방향 회전 (또는 역방향 회전)
+    // 이동 가능할 때까지 반시계 방향 회전
     for dir in 0..<8 {
         var newDir = fish.direction.rawValue + dir
         newDir %= 8
