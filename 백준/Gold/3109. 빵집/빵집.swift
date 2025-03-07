@@ -24,25 +24,6 @@ struct Pos {
     }
 }
 
-struct Queue<T> {
-    private var queue: [T] = []
-    private var head = 0
-    var isEmpty: Bool {
-        return head >= queue.count
-    }
-
-    mutating func push(_ element: T) {
-        queue.append(element)
-    }
-
-    mutating func pop() -> T? {
-        guard !isEmpty else { return nil }
-        defer { head += 1 }
-        return queue[head]
-    }
-
-}
-
 let numbers = readLine()!.split(separator: " ").map { Int(String($0))! }
 let height = numbers[0]
 let width = numbers[1]
@@ -50,9 +31,6 @@ let dy = [-1, 0, 1]
 let dx = [1, 1, 1]
 let maxX = width - 1
 var boards: [[Space]] = []
-var visited: [[(isVisited: Bool, startY: Int)]] = Array(
-    repeating: Array(repeating: (false, 0), count: width),
-    count: height)
 
 func input() {
     for _ in 0..<height {
