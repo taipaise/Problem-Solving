@@ -315,15 +315,15 @@ extension Album {
     }
 }
 
-let io = FileIO()
-let n = io.readInt()
+let n = Int(readLine()!)!
 var curAlbum = Album("album")
 var iniAlbum = curAlbum
 var res = ""
 
 for _ in 0..<n {
-    let commandType = CommandType(rawValue: io.readString())!
-    let detail = io.readString()
+    let inputs = readLine()!.split(separator: " ").map { String($0) }
+    let commandType = CommandType(rawValue: inputs[0])!
+    let detail = inputs[1]
 
     switch commandType {
     case .makeAlbum:
@@ -340,51 +340,3 @@ for _ in 0..<n {
     }
 }
 print(res)
-
-
-final class FileIO {
-    private var buffer:[UInt8]
-    private var index: Int
-
-    init(fileHandle: FileHandle = FileHandle.standardInput) {
-        buffer = Array(fileHandle.readDataToEndOfFile())+[UInt8(0)]
-        index = 0
-    }
-
-    @inline(__always) private func read() -> UInt8 {
-        defer { index += 1 }
-
-        return buffer.withUnsafeBufferPointer { $0[index] }
-    }
-
-    @inline(__always) func readInt() -> Int {
-        var sum = 0
-        var now = read()
-        var isPositive = true
-
-        while now == 10 || now == 32 { now = read() }
-        if now == 45{ isPositive.toggle(); now = read() }
-        while now >= 48, now <= 57 {
-            sum = sum * 10 + Int(now-48)
-            now = read()
-        }
-
-        return sum * (isPositive ? 1:-1)
-    }
-
-    @inline(__always) func readString() -> String {
-        var str = ""
-        var now = read()
-
-        while now == 10
-                || now == 32 { now = read() }
-
-        while now != 10
-                && now != 32 && now != 0 {
-            str += String(bytes: [now], encoding: .ascii)!
-            now = read()
-        }
-
-        return str
-    }
-}
