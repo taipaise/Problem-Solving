@@ -8,7 +8,8 @@ let n = Int(readLine()!)!
 var honey: [Int] = readLine()!.split(separator: " ").map { Int(String($0))! }
 var sumArray: [Int] = Array(repeating: 0, count: n)
 var homePosition = 0
-var beePositions: [Int] = []
+var bee1Position = 0
+var bee2Position = 0
 var res = 0
 
 var sum = 0
@@ -18,30 +19,41 @@ for i in 0..<n {
 }
 
 func solution() {
-    for i in 0..<n {
-        homePosition = i
-        select(index: 0)
+    // 집이 한쪽 끝에 있는 경우
+    // 벌 한 마리는 반대쪽 끝에 있어야 함
+    // 다른 벌 한마리는 남은 위치 중 한개
+
+    // 집이 왼쪽 끝에 있는 경우
+    homePosition = 0
+    bee1Position = n - 1
+    for i in 1..<n - 1 {
+        bee2Position = i
+        let honey1 = calculate(bee1Position, bee2Position)
+        let honey2 = calculate(bee2Position, bee1Position)
+        res = max(res, honey1 + honey2)
     }
+
+    // 집이 오른쪽 끝에 있는 경우
+    homePosition = n - 1
+    bee1Position = 0
+    for i in 1..<n - 1 {
+        bee2Position = i
+        let honey1 = calculate(bee1Position, bee2Position)
+        let honey2 = calculate(bee2Position, bee1Position)
+        res = max(res, honey1 + honey2)
+    }
+
+    // 집이 중간에 있는 경우
+    // 벌이 양쪽 끝에 하나씩 있어야 함. 집의 위치를 1~n-2위치까지 확인 -> 집에 있는 꿀 채취 가능 굳이 확인할 필요 x
+    bee1Position = 0
+    bee2Position = n - 1
+    homePosition = 1
+    let honey1 = calculate(bee1Position, bee2Position)
+    let honey2 = calculate(bee2Position, bee1Position)
+    res = max(res, honey1 + honey2)
+
+
     print(res)
-}
-
-
-func select(index: Int) {
-    if beePositions.count == 2 {
-        let bee1 = calculate(beePositions[0], beePositions[1])
-        let bee2 = calculate(beePositions[1], beePositions[0])
-
-        res = max(res, bee1 + bee2)
-        return
-    }
-
-    for i in index..<n {
-        if i == homePosition { continue } // 집을 제외하고 벌을 배치
-
-        beePositions.append(i)
-        select(index: i + 1)
-        beePositions.removeLast()
-    }
 }
 
 func calculate(_ targetBeePosition: Int, _ otherBeePosition: Int) -> Int {
