@@ -151,13 +151,16 @@ func markCanReach() {
 
 // 타일을 하나 골라 바꾸는 함수
 func selectAndChange() -> Int {
+    canReach[0][0] = 0
     var moveCount = Int.max
 
     for y in 0..<n {
         for x in 0..<n {
             guard canReach[y][x] == 0 else { continue } // 도착지점 이미 방문 가능하면 바꿀 필요 없음
-             for i in 1...Tile.allCases.count {
-                let oldTile = boards[y][x]
+
+            let oldTile = boards[y][x]
+
+            for i in 1...Tile.allCases.count {
                 let newTile = Tile(rawValue: (oldTile.rawValue + i) % Tile.allCases.count)!
                 boards[y][x] = newTile
 
@@ -227,6 +230,7 @@ func findRoute() -> Int {
         visited[ny][nx] = true
         queue.push((count + 1, Pos(ny, nx)))
     }
+
     return -1
 }
 
@@ -238,10 +242,10 @@ func solution() {
 
     if moveCount != -1
     {
-        // k가 0이면 바로 답
-        print(moveCount)
-        if k == 0 {
 
+        // k가 0이면 바로 답
+        if k == 0 {
+            print(moveCount)
         } else {
             if moveCount < n * n {
                 print(moveCount)
