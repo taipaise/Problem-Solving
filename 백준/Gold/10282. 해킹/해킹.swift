@@ -2,12 +2,10 @@ import Foundation
 
 
 struct Edge: Comparable {
-    let from: Int
     let to: Int
     let time: Int
 
-    init(_ from: Int, _ to: Int, _ time: Int) {
-        self.from = from
+    init(_ to: Int, _ time: Int) {
         self.to = to
         self.time = time
     }
@@ -97,23 +95,26 @@ func solution() {
             let start = line[1]
             let to = line[0]
             let time = line[2]
-            let edge = Edge(start, to, time)
+            let edge = Edge(to, time)
             computers[start].append(edge)
         }
 
         // 시작 간선들을 힙에 넣기
         timeDist[target] = 0
-        for edge in computers[target] {
-            edges.insert(edge)
-        }
+        edges.insert(Edge(target, 0))
 
         while let edge = edges.pop() {
-            guard timeDist[edge.to] > timeDist[edge.from] + edge.time else { continue }
-            timeDist[edge.to] = timeDist[edge.from] + edge.time
+            let currentTime = edge.time
+            let currentNode = edge.to
+            if timeDist[currentNode] < currentTime { continue }
 
-            for toEdge in computers[edge.to] {
-                guard timeDist[toEdge.to] > timeDist[toEdge.from] + toEdge.time else { continue }
-                edges.insert(toEdge)
+            for nextEdge in computers[currentNode] {
+                let nextTime = currentTime + nextEdge.time
+
+                if timeDist[nextEdge.to] > nextTime {
+                    timeDist[nextEdge.to] = nextTime
+                    edges.insert(Edge(nextEdge.to, nextTime))
+                }
             }
         }
 
@@ -128,8 +129,6 @@ func solution() {
 
         print(resCount, resTime)
     }
-
-
 }
 
 solution()
