@@ -1,62 +1,63 @@
 #include <iostream>
-#include <algorithm>
-#include <string>
 #include <vector>
-#include <stack>
-#include <queue>
-#include <set>
-#include <cstring>
-#include <list>
-#include <string>
-
+#include <algorithm>
 #define FAST ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL)
-#define rep(i, a, b) for(auto i = a; i < b; ++i)
-#define REP(i, a, b) for(auto i = a; i <= b; ++i)
 #define endl "\n"
+
 
 using namespace std;
 
-struct Line {
-    int srt;
+struct Edge {
+    int start;
     int end;
 
-    bool operator<(const Line &rhs) const {
-        if (srt != rhs.srt)
-            return srt > rhs.srt;
-        return end > rhs.end;
+    bool operator<(const Edge rhs) const {
+        if (start != rhs.start) {
+            return start < rhs.start;
+        }
+        return end < rhs.end;
     }
 };
 
-priority_queue<Line> pq;
-Line curLine;
-int n;
-int res = 0;
-
-int main(void) {
+int main() {
     FAST;
-    cin >> n;
-    int srt, end;
+    
+    int n;
+    int res = 0;
+    vector<Edge> edges;
 
-    rep(i, 0, n) {
-        cin >> srt >> end;
-        pq.push({srt, end});
+    cin >> n;
+    
+    edges.resize(n);
+
+    for (int i = 0; i < n; i++) {
+        int start, end;
+        cin >> start >> end;
+        Edge edge = {start, end};
+        edges[i] = edge;
     }
 
-    curLine = pq.top();
-    pq.pop();
+    sort(edges.begin(), edges.end());
 
-    while(!pq.empty()){
-        Line nextLine = pq.top();
-        pq.pop();
+    int start, end;
+    Edge edge = edges[0];
+    start = edge.start;
+    end = edge.end;
 
-        if(curLine.end >= nextLine.srt) {
-            curLine = {curLine.srt, max(curLine.end, nextLine.end)};
+    for(int i = 1; i < n; i++) {
+        int curStart = edges[i].start;
+        int curEnd = edges[i].end;
+
+        if (curStart <= end) {
+            end = max(end, curEnd);
         } else {
-            res += (curLine.end - curLine.srt);
-            curLine = nextLine;
+            res += end - start;
+            start = curStart;
+            end = curEnd;
         }
     }
 
-    res += (curLine.end - curLine.srt);
+    res += (end - start);
     cout << res;
+    return 0;
 }
