@@ -1,88 +1,71 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
-
-#define FAST ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL)
-#define endl "\n"
 #define rep(i, a, b) for(auto i = a; i < b; ++i)
 #define REP(i, a, b) for(auto i = a; i <= b; ++i)
-#define pii pair<int, int>
-#define all(v) (v).begin(), (v).end() 
-#define pb push_back
-#define INF numeric_limits<int>::max()
-#define PIV 1 << 20
+#define FAST ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL)
 
 using namespace std;
-typedef long long ll;
-typedef unsigned long long ull;
 
-int n, m;
+struct DisjointSet {
+private: 
+    vector<int> parents;
+    vector<int> ranks;
+public:
+    DisjointSet(int n) {
+        parents.resize(n + 1);
+        REP(i, 0, n) parents[i] = i;
+        ranks = vector<int>(n + 1, 1);
+    }
+    
+    void merge(int u, int v) {
+        u = find(u);
+        v = find(v);
+        if (u == v) return;
 
-struct DisjointSet{
-    int n;
-    vector<int> parent;
-    vector<int> rank;
+        if (ranks[u] > ranks[v]) swap(u, v);
 
-    DisjointSet(int n) : n(n), parent(n + 1), rank(n + 1){
-        REP(i, 1, n){
-            parent[i] = i;
-            rank[i] = i;
-        }
+        parents[u] = v;
+
+        if (ranks[u] == ranks[v]) ++ranks[v];
     }
 
-    int find_parent(int u){
-        if(parent[u] == u)
-            return u;
-        else{
-            parent[u] = find_parent(parent[u]);
-            return parent[u];
-        }
+    int find(int u) {
+        if (parents[u] == u) { return u; }
+        return parents[u] = find(parents[u]);
     }
 
-    void merge_parent(int u, int v){
-        u = find_parent(u);
-        v = find_parent(v);
-
-        //부모가 같다면, 이미 연결되어 있다는 뜻
-        if(u == v) 
-            return;
-        
-        if (rank[u] > rank[v])
-            swap(u, v);
-        parent[u] = v;
-        if (rank[u] == rank[v]) rank[v]++;
-    }
 };
 
-
-int main(void){
+int main() {
     FAST;
 
-    cin >> n;
-    cin >> m;
+    int n, targetCount;
+    cin >> n >> targetCount;
+    vector<vector<int>> boards(n, vector<int>(n));
+    vector<int> targets;
+    DisjointSet disjointSet(n);
 
-    int temp;
-    int prev;
-    DisjointSet disjointSet = DisjointSet(n);
 
-    REP(i, 1, n){
-        REP(j, 1, n){
-            cin >> temp;
-            if(temp)
-                disjointSet.merge_parent(i, j);
+    REP(i, 1, n) {
+        REP(j, 1, n) {
+            int flag;
+            cin >> flag;
+
+            if (flag) disjointSet.merge(i, j);
         }
     }
 
-    cin >> temp;
-    prev = disjointSet.find_parent(temp);
-    rep(i, 0, m - 1){
-        cin >> temp;
-        if(prev != disjointSet.find_parent(temp)){
+    targets.resize(targetCount);
+    rep(i, 0, targetCount) cin >> targets[i];
+
+    int parent = disjointSet.find(targets[0]);
+
+    rep(i, 1, targets.size()) {
+        if (disjointSet.find(targets[i]) != parent) {
             cout << "NO";
             return 0;
         }
     }
-
+    
     cout << "YES";
-    return 0;
 }
