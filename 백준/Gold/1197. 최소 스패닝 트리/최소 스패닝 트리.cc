@@ -1,83 +1,88 @@
 #include <iostream>
-#include <algorithm>
 #include <vector>
-
-#define FAST ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL)
-#define endl "\n"
+#include <algorithm>
+#include <queue>
 #define rep(i, a, b) for(auto i = a; i < b; ++i)
 #define REP(i, a, b) for(auto i = a; i <= b; ++i)
-#define pii pair<int, int>
-#define all(v) (v).begin(), (v).end() 
-#define pb push_back
-#define INF numeric_limits<int>::max()
-#define PIV 1 << 20
+#define FAST ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL)
 
 using namespace std;
-typedef long long ll;
-typedef unsigned long long ull;
 
-struct Edge{
-    int from;
-    int to;
-    int weight;
+struct DisjointSet {
+    vector<int> parents;
+    vector<int> ranks;
 
-    bool operator< (const Edge &rhs){//RHS = right hand side value
-        return weight < rhs.weight;
-    } 
-};
+    DisjointSet(int n) {
+        parents.resize(n + 1);
+        ranks.resize(n + 1, 1);
 
-struct DisjointSet{
-    int n;
-    vector<int> parent;
-    vector<int> rank;
-    
-    DisjointSet(int n): n(n), parent(n + 1), rank(n + 1) {
-        REP(i, 1, n){
-            parent[i] = i;
-            rank[i] = 1;
+        REP(i, 0, n) {
+            parents[i] = i;
         }
     }
 
-    int find(int u){
-        if(u == parent[u]) return u;
-        return parent[u] = find(parent[u]);
-    }
-
-    void merge(int u, int v){
+    void merge(int u, int v) {
         u = find(u);
         v = find(v);
 
-        if (u == v) return;
+        if (u == v) { return; }
 
-        if(rank[u] > rank[v]) swap(u, v);
-        parent[u] = v;
+        if (ranks[u] > ranks[v]) { swap(u, v); }
 
-        if(rank[u] == rank[v]) ++rank[v];
+        parents[u] = v;
+        
+        if (ranks[v] == ranks[u]) {
+            ++ranks[v];
+        }
+    }
+
+    int find(int u) {
+        if (parents[u] == u) {
+            return u;
+        }
+
+        return parents[u] = find(parents[u]);
     }
 };
 
-int v, e;
-vector<Edge> edges;
-int from, to, weight;
-int res = 0;
+struct Edge {
+    int from;
+    int to;
+    int cost;
 
-int main(void)
-{
+    bool operator<(const Edge& rhs) const {
+        return cost > rhs.cost;
+    }
+};
+
+int main() {
     FAST;
+
+    int v, e;
+    int totalCost = 0;
+    DisjointSet disjointSet(0);
+    priority_queue<Edge> edges;
+
     cin >> v >> e;
-    DisjointSet disjointset = DisjointSet(v);
+    disjointSet = DisjointSet(v);
 
-    rep(i, 0, e){
-        cin >> from >> to >> weight;
-        edges.pb({from, to, weight});
+    rep(i, 0, e) {
+        int from, to, cost;
+        cin >> from >> to >> cost;
+        edges.push({from, to, cost});
     }
 
-    sort(edges.begin(), edges.end());
+    while (!edges.empty()) {
+        Edge edge = edges.top();
+        int from = edge.from;
+        int to = edge.to;
+        edges.pop();
 
-    rep(i, 0, e){
-        if(disjointset.find(edges[i].from) == disjointset.find(edges[i].to)) continue;
-        disjointset.merge(edges[i].from, edges[i].to);
-        res += edges[i].weight;
+        if (disjointSet.find(from) == disjointSet.find(to)) { continue; }
+
+        totalCost += edge.cost;
+        disjointSet.merge(from, to);
     }
-    cout << res;
+
+    cout << totalCost;
 }
