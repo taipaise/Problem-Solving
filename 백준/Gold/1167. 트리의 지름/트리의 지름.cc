@@ -1,89 +1,80 @@
 #include <iostream>
 #include <vector>
+#include <climits>
+#include <queue>
 #include <algorithm>
-
-#define FAST ios_base::sync_with_stdio(false); cin.tie(NULL);cout.tie(NULL)
-#define rep(i, a, b) for(int i = a; i < b; i++)
-#define REP(i, a, b) for(int i = a; i <= b; i++)
+#define rep(i, a, b) for(auto i = a; i < b; ++i)
+#define REP(i, a, b) for(auto i = a; i <= b; ++i)
+#define FAST ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL)
 using namespace std;
 
-
-struct Node{
-    int no;
+struct Edge {
+    int to;
     int dist;
 
-    bool operator<(const Node& rhs)const{
+    bool operator<(const Edge& rhs) const {
         return dist > rhs.dist;
     }
 };
 
-struct V{
-    int no;
-    vector<Node> ad;
-
-    bool operator<(const V& rhs)const{
-        return no < rhs.no;
-    }
-};
+//가장 먼 노드, 해당 노드까지의 거리 return
+pair<int, int> dijkstra(int size, int start, vector<vector<Edge>>& graph) {
+    vector<int> dp(size + 1, 1e7);
+    priority_queue<Edge> edges;
+    dp[start] = 0;
+    edges.push({start, 0});
 
 
-int n;
-vector<V> graph;
-vector<Node> dist;
+    while (!edges.empty()) {
+        Edge edge = edges.top();
+        edges.pop();
 
-void dfs(int x){
-    //x의 인접 노드 수만큼 반복
-    rep(i, 0, graph[x].ad.size()){
-        //만약 이미 방문했다면 건너뛰기
-        if(dist[graph[x].ad[i].no].dist != -1) continue;
+        int node = edge.to;
+        int dist = edge.dist;
 
-        //해당 인접 노드까지의 거리를 갱신: 기준 노드에서 x까지의 거리 + x에서 인접 노드까지의 거리
-        dist[graph[x].ad[i].no].dist = dist[x].dist + graph[x].ad[i].dist;
-        dfs(graph[x].ad[i].no);
-    }
-}
+        if (dp[node] < dist) { continue; }
 
-void init(int x){
-    dist.clear();
-    dist.resize(n + 1);
+        for(Edge nextEdge: graph[node]) {
+            int nextNode = nextEdge.to;
+            int newDist = dp[node] + nextEdge.dist;
 
-    REP(i, 1, n){
-        dist[i].no = i;
-        dist[i].dist = -1;
-    }
+            if (dp[nextNode] <= newDist) { continue; }
 
-    dist[x].dist = 0;
-
-    return;
-}
-
-
-int main(void){
-    FAST;
-    cin >> n;
-    graph.resize(n + 1);
-
-    REP(i, 1, n){
-        int cur_node;
-        cin >> cur_node;
-        int no, d;
-        while(true){
-            cin >> no;
-            if(no == -1) break;
-            cin >> d;
-            graph[cur_node].ad.push_back({no, d});
+            dp[nextNode] = newDist;
+            edges.push({nextNode, newDist});
         }
     }
 
-    init(1);
-    dfs(1);
-    sort(dist.begin() + 1, dist.end());
+    auto maxIt = max_element(dp.begin() + 1, dp.end());
+    int maxIndex = distance(dp.begin(), maxIt);
     
-    int next = dist[1].no;
-    
-    init(next);
-    dfs(next);
-    sort(dist.begin() + 1, dist.end());
+    return {maxIndex, *maxIt};
+}
 
-    cout << dist[1].dist;   
+int main() {
+    FAST;
+    int n;
+    vector<vector<Edge>> graph;
+
+    cin >> n;
+
+    graph.resize(n + 1);
+
+    rep(i, 0, n) {
+        int node;
+        int next, dist;
+
+        cin >> node;
+        cin >> next;
+
+        while(next != -1) {
+            cin >> dist;
+            graph[node].push_back({next, dist});
+            cin >> next;
+        }
+    }
+
+    pair<int, int>rootOrLeaf = dijkstra(n, 1, graph);
+    pair<int, int>res = dijkstra(n, rootOrLeaf.first, graph);
+    cout << res.second;
 }
