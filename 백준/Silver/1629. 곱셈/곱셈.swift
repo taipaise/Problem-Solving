@@ -1,28 +1,30 @@
 import Foundation
 
-let numbers = readLine()!
-    .components(separatedBy: " ")
-    .map { Int($0)! }
+let numbers = readLine()!.split(separator: " ").map { Int(String($0))! }
+
 let a = numbers[0]
 let b = numbers[1]
 let c = numbers[2]
+var powers: [Int: Int] = [:]
 
-func mul(_ count: Int) -> Int64 {
-    if count == 1 {
-        return Int64(a % c)
-    }
 
-    if count == 0 {
+func mult(_ power: Int) -> Int {
+    if power == 0 {
         return 1
     }
 
-    let half = mul(count / 2)
-
-    if count % 2 == 0 {
-        return (half * half) % Int64(c)
-    } else {
-        return (half * half) % Int64(c) * Int64(a) % Int64(c)
+    if power == 1 {
+        return a % c
     }
+
+    if let record = powers[power] {
+        return record
+    }
+
+    let res = (mult(power / 2) * mult(power - (power / 2))) % c
+    powers[power] = res
+
+    return res
 }
 
-print(mul(b))
+print(mult(b))
