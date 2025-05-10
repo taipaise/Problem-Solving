@@ -9,6 +9,7 @@ protocol Character {
 }
 
 extension Character {
+    // 데미지 입고 살면 true, 죽으면 false
     mutating func takeDamage(_ enemy: Character, _ multiplier: Int = 1) -> Bool {
         let damage = max(1, enemy.atk * multiplier - def)
         hp -= damage
@@ -16,6 +17,7 @@ extension Character {
         return hp > 0
     }
 
+    // 힐 할 수치 지정 안하면 풀 체력으로 회복
     mutating func heal(_ point: Int? = nil) {
         if let point = point {
             hp = min(hp + point, maxHp)
@@ -139,6 +141,7 @@ struct Hero: Character, CustomStringConvertible {
         accs = []
     }
 
+    // 트랩 밟고 살면 true, 죽으면 false
     mutating func trapped() -> Bool {
         if accs.contains(.DX) {
             hp -= 1
@@ -183,6 +186,7 @@ struct Hero: Character, CustomStringConvertible {
         }
     }
 
+    // 장비 빼는 함수. 모든 장비를 뺄 수 있게 했지만, 실제로는 RE 악세 하나만 뺄거임
     mutating func unEquip(_ equipment: Equipment) {
         switch equipment {
         case .weapon:
@@ -232,8 +236,7 @@ struct Pos: Hashable, CustomStringConvertible {
     }
 }
 
-// MARK: -
-
+// MARK: - 풀이
 let dy = [0, 0, -1, 1]
 let dx = [-1, 1, 0, 0]
 var height = 0
@@ -378,13 +381,14 @@ func fight() -> Bool {
         hero.accs.contains(.HU)
     {
         hero.heal()
-        protection = true
+        protection = true // protection 플래그가 켜져 있으면 한 번은 무적 판정
     }
 
     if hero.accs.contains(.CO) {
         multiplier = hero.accs.contains(.DX) ? 3 : 2
     }
 
+    // 몬스터와 치고 받고 싸움. 몬스터를 죽이는데 필요한 턴 수, 용사가 죽는데 필요한 턴수 계산으로 최적화 가능 (근데 안함)
     while true {
         let isMonsterAlive = monster.takeDamage(hero, multiplier)
         multiplier = 1
@@ -399,9 +403,6 @@ func fight() -> Bool {
         let isHeroAlive = hero.takeDamage(monster)
         if !isHeroAlive { break }
     }
-
-
-
 
     guard hero.hp > 0 else {
         // 부활 아이템이 있다면
@@ -454,7 +455,6 @@ func solution() {
         let space = boards[heroPos.y][heroPos.x]
         let result = action(space)
 
-        // 죽거나, 보스 몬스터를 만난 상황
         switch space {
         case .trap:
             guard !result else { continue }
@@ -462,18 +462,18 @@ func solution() {
             print(ResultMessage.trapped)
             return
         case .monster:
-            guard !result else { continue }
+            guard !result else { continue } // 아래 코드는 죽었을 경우 실행
             guard let monster = monsters[heroPos] else { break }
             printResult(isHeroDead: true)
             print("\(ResultMessage.lost) \(monster.name)..")
             return
         case .boss:
             if result {
-                guard monsters[bossPos] == nil else { continue }
-                printResult(isHeroDead: false)
+                guard monsters[bossPos] == nil else { continue } // 보스한테 죽었는데, RE로 부활한 경우
+                printResult(isHeroDead: false) // 아래 코드는 보스를 죽인 경우
                 print(ResultMessage.win)
                 return
-            } else {
+            } else { // 아래 코드는 죽었을 경우 실행
                 guard let monster = monsters[heroPos] else { break }
                 printResult(isHeroDead: true)
                 print("\(ResultMessage.lost) \(monster.name)..")
